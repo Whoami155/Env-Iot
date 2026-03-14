@@ -1,47 +1,32 @@
-#include <DHT.h>
+#define BLYNK_TEMPLATE_ID "TMPL3q519xQ8X"
+#define BLYNK_TEMPLATE_NAME "CLASSROOM ENVIRONMENT"
+#define BLYNK_AUTH_TOKEN "CMR6MfIiCfQu34xm9dROcE0Yt1NPJzQf"
 
-// Pin Definitions
-#define DHTPIN 2        // DHT11 data pin connected to Arduino pin 2
-#define DHTTYPE DHT11
-#define MQ135_PIN A0    // MQ135 connected to analog pin A0
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
 
-DHT dht(DHTPIN, DHTTYPE);
+char ssid[] = "AndroidAP_2853";
+char pass[] = "qxq12346";
 
-void setup() {
+void setup()
+{
   Serial.begin(9600);
-  dht.begin();
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
 }
 
-void loop() {
+void loop()
+{
+  Blynk.run();
 
-  // Read temperature and humidity
-  float humidity = dht.readHumidity();
-  float temperature = dht.readTemperature();
+  if (Serial.available())
+  {
+    String data = Serial.readStringUntil('\n');
 
-  // Read air quality value
-  int airQuality = analogRead(MQ135_PIN);
+    int temp, hum, air;
+    sscanf(data.c_str(), "%d,%d,%d", &temp, &hum, &air);
 
-  // Check if DHT sensor reading failed
-  if (isnan(humidity) || isnan(temperature)) {
-    Serial.println("Failed to read from DHT sensor!");
-    return;
+    Blynk.virtualWrite(V0, temp);
+    Blynk.virtualWrite(V1, hum);
+    Blynk.virtualWrite(V2, air);
   }
-
-  // Print temperature
-  Serial.print("Temperature: ");
-  Serial.print(temperature);
-  Serial.println(" °C");
-
-  // Print humidity
-  Serial.print("Humidity: ");
-  Serial.print(humidity);
-  Serial.println(" %");
-
-  // Print air quality
-  Serial.print("Air Quality Value: ");
-  Serial.println(airQuality);
-
-  Serial.println("---------------------------");
-
-  delay(2000); // wait 2 seconds
 }
