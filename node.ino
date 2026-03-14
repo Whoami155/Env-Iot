@@ -1,6 +1,6 @@
 #define BLYNK_TEMPLATE_ID "TMPL3q519xQ8X"
 #define BLYNK_TEMPLATE_NAME "CLASSROOM ENVIRONMENT"
-#define BLYNK_AUTH_TOKEN "CMR6MfIiCfQu34xm9dROcE0Yt1NPJzQf"
+#define BLYNK_AUTH_TOKEN "************"
 
 #include <ESP8266WiFi.h>
 #include <BlynkSimpleEsp8266.h>
