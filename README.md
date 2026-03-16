@@ -28,8 +28,6 @@ Sensors → Arduino UNO → Serial Communication → NodeMCU (ESP8266) → WiFi 
 * NodeMCU (ESP8266 WiFi Module)
 * DHT11 Temperature and Humidity Sensor
 * MQ Air Quality Sensor
-* Sound Sensor Module
-* PIR Motion Sensor
 * Breadboard
 * Jumper Wires
 * USB Cables (Arduino + NodeMCU)
@@ -38,6 +36,8 @@ Sensors → Arduino UNO → Serial Communication → NodeMCU (ESP8266) → WiFi 
 
 * Relay Module
 * 12V Fan (automatic ventilation control)
+* PIR Motion Sensor
+*  Sound Sensor Module
 * Passive Buzzer (alert system)
 
 ---
