@@ -4,48 +4,63 @@
 #define DHTTYPE DHT11
 
 #define BUZZER 8
+#define RELAY 7
 #define MQ_PIN A0
 
-float AIR_THRESHOLD = 200;  // adjust after testing
+int AIR_THRESHOLD = 200;   // adjust if needed
 
 DHT dht(DHTPIN, DHTTYPE);
 
 void setup() {
   Serial.begin(9600);
+
   pinMode(BUZZER, OUTPUT);
+  pinMode(RELAY, OUTPUT);
+
+  digitalWrite(RELAY, HIGH); // relay OFF initially
+
   dht.begin();
 }
 
 void loop() {
 
-  // 🌡️ Read temperature & humidity
   int temperature = dht.readTemperature();
   int humidity = dht.readHumidity();
+  int air = analogRead(MQ_PIN);
 
-  // 🌫️ Read air quality (MQ sensor)
-  int airRaw = analogRead(MQ_PIN);
-
-
-  int air = airRaw;
-
-  // ❗ Check if DHT failed
+  // Safety check
   if (isnan(temperature) || isnan(humidity)) {
-    Serial.println("0,0,0");  // safe fallback
+    Serial.println("0,0,0");
     return;
   }
 
-  // 📡 Send clean data to NodeMCU
+  // 📡 Send data to NodeMCU
   Serial.print(temperature);
   Serial.print(",");
   Serial.print(humidity);
   Serial.print(",");
   Serial.println(air);
 
-  // 🔔 BUZZER LOGIC
+  //  CONTROL LOGIC
   if (air > AIR_THRESHOLD) {
+
+    //  Buzzer ON
     tone(BUZZER, 1000);
+
+    //  Fan ON
+    digitalWrite(RELAY, LOW);
+
+    Serial.println("ALERT: FAN ON");
+
   } else {
+
+    //  Buzzer OFF
     noTone(BUZZER);
+
+    //  Fan OFF
+    digitalWrite(RELAY, HIGH);
+
+    Serial.println("NORMAL");
   }
 
   delay(2000);
