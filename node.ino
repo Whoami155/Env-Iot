@@ -1,12 +1,13 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
+#include <WiFiClientSecure.h>
 
-// 🔐 WIFI
+//  WIFI
 const char* ssid = "AndroidAP_2853";
 const char* password = "qxq12346";
 
-// 🌐 BACKEND URL
-String serverURL = "https://env-iot.onrender.com";
+// BACKEND URL 
+String serverURL = "https://env-iot.onrender.com/data";
 
 void setup() {
   Serial.begin(9600);
@@ -50,13 +51,15 @@ void loop() {
 
       bool alert = false;
 
-      if (air > 400) {
+      if (air > 200) {   // match backend threshold
         alert = true;
       }
 
-      WiFiClient client;
-      HTTPClient http;
+      //  HTTPS FIX
+      WiFiClientSecure client;
+      client.setInsecure();
 
+      HTTPClient http;
       http.begin(client, serverURL);
       http.addHeader("Content-Type", "application/json");
 
