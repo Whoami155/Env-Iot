@@ -6,7 +6,7 @@ const char* ssid = "AndroidAP_2853";
 const char* password = "qxq12346";
 
 // 🌐 BACKEND URL
-String serverURL = "http://10.65.191.195:5000/data";
+String serverURL = "https://env-iot.onrender.com";
 
 void setup() {
   Serial.begin(9600);
