@@ -3,8 +3,8 @@
 #include <WiFiClientSecure.h>
 
 //  WIFI
-const char* ssid = "AndroidAP_2853";
-const char* password = "qxq12346";
+const char* ssid = "WIFI_NAME";
+const char* password = "WIFI_PASSWORD";
 
 // BACKEND URL 
 String serverURL = "https://env-iot.onrender.com/data";
