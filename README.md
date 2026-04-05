@@ -1,127 +1,110 @@
-Smart Classroom Environment Monitoring System
-Overview
+🌿 Smart Classroom Environment Monitoring System
+📌 Overview
 
-The Smart Classroom Environment Monitoring System is an IoT-based project designed to monitor environmental conditions inside a classroom and display them in real time through a cloud dashboard.
+The Smart Classroom Environment Monitoring System is an IoT-based solution designed to monitor environmental conditions in real-time and display them through a live web dashboard.
 
-The system collects sensor data using an Arduino UNO, sends the data to a NodeMCU (ESP8266), and publishes it to the Blynk IoT cloud, where it can be viewed from a web dashboard or mobile device.
+This system collects sensor data using an Arduino UNO, transmits it via NodeMCU (ESP8266) to a cloud-based backend, and visualizes it on a deployed frontend dashboard. It also includes automation and alert mechanisms to improve safety and comfort.
 
-The goal of the project is to improve classroom comfort, safety, and energy efficiency by monitoring key environmental parameters such as temperature, humidity, air quality, noise levels, and occupancy.
-
-System Architecture
-
-Sensors collect environmental data and send it to the Arduino. The Arduino processes the sensor readings and sends them through serial communication to the NodeMCU. The NodeMCU connects to WiFi and transmits the data to the Blynk cloud platform. The Blynk dashboard displays the values in real time.
-
-Flow:
-
-Sensors → Arduino UNO → Serial Communication → NodeMCU (ESP8266) → WiFi → Blynk Cloud → Dashboard
-Hardware Components
+🚀 System Architecture
+Sensors → Arduino UNO → Serial Communication → NodeMCU → WiFi → Cloud Backend → Web Dashboard
+🔄 Data Flow
+Sensors collect environmental data
+Arduino processes readings
+Data sent via Serial to NodeMCU
+NodeMCU sends data to cloud backend (Render)
+Backend stores data (SQLite)
+Frontend fetches and displays live data
+🧰 Hardware Components
 Arduino UNO
-NodeMCU (ESP8266 WiFi Module)
-DHT11 Temperature and Humidity Sensor
+NodeMCU (ESP8266)
+DHT11 Temperature & Humidity Sensor
 MQ Air Quality Sensor
+Passive Buzzer 🔔
+Relay Module ⚡
+DC Fan (for ventilation)
 Breadboard
 Jumper Wires
-USB Cables (Arduino + NodeMCU)
-Passive Buzzer (Alert System) ✅ (Implemented)
-Future Hardware Additions
-Relay Module
-12V Fan (automatic ventilation control)
-PIR Motion Sensor
-Sound Sensor Module
-Software & Technologies
+USB Cables
+💻 Software & Technologies
 Arduino IDE
 Embedded C / Arduino Programming
-Blynk IoT Platform
-ESP8266 WiFi Library
-DHT Sensor Library
-Features Implemented
-Real-time temperature monitoring
-Real-time humidity monitoring
-Air quality measurement
-IoT dashboard using Blynk Cloud
-WiFi connectivity via NodeMCU
-Serial communication between Arduino and NodeMCU
-Live data visualization using gauges and labels
-Air Quality Alert System using Passive Buzzer 🔔
-🔔 Alert System (Buzzer Integration)
+Flask (Python Backend)
+SQLite Database
+HTML, CSS, JavaScript (Frontend)
+Chart.js (Data Visualization)
+MailerSend API (Email Alerts)
+Render (Backend Deployment)
+Netlify / GitHub Pages (Frontend Deployment)
+✨ Features Implemented
+📊 Real-Time Monitoring
+Temperature tracking
+Humidity monitoring
+Air quality measurement (MQ sensor)
+🌐 Live Dashboard
+Real-time data visualization
+Graphs and gauges
+Responsive UI
+🔔 Alert System
+Passive buzzer activates when AQI exceeds threshold
+Email alerts sent using MailerSend API
+⚙️ Automation
+Relay-controlled fan turns ON automatically when air quality is poor
+☁️ Cloud Integration
+Backend deployed on cloud
+Data accessible globally via API
+💾 Persistent Storage
+SQLite database stores latest readings
+Data retained even after server restart
+🔔 Alert Logic
+If Air Quality > Threshold:
+    → Buzzer ON
+    → Fan ON
+    → Email Alert Sent
+Else:
+    → Buzzer OFF
+    → Fan OFF
+📦 API Endpoints
+🔹 GET Data
+/get-data
 
-A passive buzzer is integrated with the Arduino to provide real-time audible alerts when environmental conditions exceed safe limits.
+Returns latest sensor readings in JSON format.
 
-The system continuously monitors air quality using an MQ sensor.
-If the air quality value crosses a predefined threshold, the buzzer is activated using a frequency signal (tone() function).
-When conditions return to normal, the buzzer automatically stops (noTone()).
+🔹 POST Data
+/data
 
-Logic:
+Receives sensor data from NodeMCU.
 
-If Air Quality > Threshold → Buzzer ON (Alert)
-Else → Buzzer OFF
-
-This ensures immediate attention to poor air conditions without relying only on the dashboard.
-
-Features Planned
-
-The following features will be implemented to enhance the system:
-
-Noise Monitoring
-
-A sound sensor will detect classroom noise levels and display them on the dashboard.
-
-Occupancy Detection
-
-A PIR motion sensor will detect whether people are present in the classroom.
-
-Automatic Ventilation
-
-A relay-controlled fan will automatically turn ON when air quality becomes poor.
-
-Smart Energy Saving
-
-If no motion is detected in the classroom for a period of time, the system will automatically turn off connected devices.
-
-Data Flow
-Sensors measure environmental conditions.
-Arduino reads the sensor values.
-Arduino sends formatted data through Serial communication.
-NodeMCU receives the data.
-NodeMCU uploads the data to the Blynk cloud using WiFi.
-The Blynk dashboard displays real-time values.
-Example Data Format
-
-Arduino sends sensor values in the following format:
-
+📊 Example Data Format
 temperature,humidity,airQuality
 
 Example:
 
 26,58,210
+🌐 Deployment
+Backend: Render (Flask API)
+Frontend: Netlify / GitHub Pages
+🎯 Project Purpose
 
-NodeMCU parses this data and sends it to Blynk Virtual Pins.
+This project demonstrates how IoT, cloud computing, and web technologies can be combined to create a smart monitoring and automation system for real-world environments like classrooms.
 
-Dashboard
+It improves:
 
-The Blynk dashboard includes:
-
-Temperature gauge
-Humidity gauge
-Air quality indicator
-Alert indication via buzzer (physical feedback)
-Additional widgets for noise and motion detection
-
-The dashboard allows users to monitor classroom conditions remotely.
-
-Project Purpose
-
-This project demonstrates how IoT can be used to create a smart monitoring system for educational environments, helping improve comfort, health, and energy efficiency.
-
-Future Improvements
-
-Possible future upgrades include:
-
-Mobile notifications when air quality is poor
-Historical data logging
-Automatic fan speed control using relay module
-AI-based classroom comfort analysis
-Integration with smart building systems
-License
+Comfort
+Safety
+Energy efficiency
+🚀 Future Enhancements
+Noise monitoring using sound sensor
+Occupancy detection (PIR sensor)
+Smart energy saving automation
+Historical data analytics
+AI-based environment optimization
+Mobile app integration
+💡 Key Highlights
+Full-stack IoT system
+Real-time cloud communication
+Automation + alerts
+Persistent data storage
+Fully deployed project
+📜 License
 
 This project is open-source and intended for educational purposes.
