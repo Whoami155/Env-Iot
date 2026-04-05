@@ -181,10 +181,4 @@ It improves:
 
 This project is open-source and intended for educational purposes.
 
----
-
-## 👨‍💻 Author
-
-Developed by **Dhruv**
-K.R. Mangalam University
 
