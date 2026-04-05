@@ -43,7 +43,7 @@ EMAIL_COOLDOWN = 60
 # 📩 EMAIL ALERT (MAILERSEND)
 def send_email_alert(value):
     try:
-        api_key = "mlsn.2842d15d53b855149336042013df026bdf3c225e74b7072168c198995935f1de"
+        api_key = "API_KEY"
 
         url = "https://api.mailersend.com/v1/email"
 
