@@ -8,7 +8,7 @@ from pymongo import MongoClient
 app = Flask(__name__)
 CORS(app)
 
-# 🌐 MONGODB CONNECTION (FIXED)
+# 🌐 MONGODB CONNECTION
 MONGO_URI = "mongodb+srv://Dhruv155_db_user:7h5E9fFzffF9V8Yf@iot-env.0ofnd6w.mongodb.net/iot_db?retryWrites=true&w=majority"
 
 try:
@@ -18,18 +18,17 @@ try:
         tlsAllowInvalidCertificates=True,
         serverSelectionTimeoutMS=5000
     )
-    
-    # test connection
-    client.server_info()
-    
+
+    client.server_info()  # test connection
+
     db = client["iot_db"]
     collection = db["readings"]
-    
+
     print("✅ MongoDB Connected Successfully")
 
 except Exception as e:
     print("❌ MongoDB Connection Error:", e)
-    collection = None   # prevent crash
+    collection = None
 
 
 # ⏱️ Email cooldown
@@ -88,8 +87,8 @@ def receive_data():
 
         current_time_str = time.strftime("%H:%M:%S")
 
-        # 💾 SAVE TO DB (SAFE)
-        if collection:
+        # ✅ FIXED LINE
+        if collection is not None:
             collection.insert_one({
                 "temperature": temp,
                 "humidity": hum,
@@ -117,7 +116,8 @@ def receive_data():
 @app.route('/get-data')
 def get_data():
     try:
-        if collection:
+        # ✅ FIXED LINE
+        if collection is not None:
             latest = collection.find_one(sort=[("_id", -1)])
 
             if latest:
