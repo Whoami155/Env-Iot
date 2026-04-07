@@ -2,38 +2,18 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 import time
-import sqlite3
+import os
+from pymongo import MongoClient
 
 app = Flask(__name__)
 CORS(app)
 
-# 🗄️ INIT DATABASE
-def init_db():
-    conn = sqlite3.connect("data.db")
-    cursor = conn.cursor()
+# 🌐 MONGODB CONNECTION
+MONGO_URI = "mongodb+srv://Dhruv155_db_user:7h5E9fFzffF9V8Yf@iot-env.0ofnd6w.mongodb.net/iot_db?retryWrites=true&w=majority"
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS readings (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        temperature REAL,
-        humidity REAL,
-        air REAL,
-        time TEXT
-    )
-    """)
-
-    conn.commit()
-    conn.close()
-
-init_db()
-
-# 🔥 Temporary storage (will sync with DB)
-latest_data = {
-    "temperature": 0,
-    "humidity": 0,
-    "air": 0,
-    "time": "No data yet"
-}
+client = MongoClient(MONGO_URI)
+db = client["iot_db"]
+collection = db["readings"]
 
 # ⏱️ Email cooldown
 last_email_time = 0
@@ -83,7 +63,7 @@ def home():
 # 📥 RECEIVE DATA
 @app.route('/data', methods=['POST'])
 def receive_data():
-    global latest_data, last_email_time
+    global last_email_time
 
     try:
         data = request.get_json()
@@ -96,25 +76,13 @@ def receive_data():
 
         current_time_str = time.strftime("%H:%M:%S")
 
-        # 💾 SAVE TO DB
-        conn = sqlite3.connect("data.db")
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            INSERT INTO readings (temperature, humidity, air, time)
-            VALUES (?, ?, ?, ?)
-        """, (temp, hum, air, current_time_str))
-
-        conn.commit()
-        conn.close()
-
-        # 🔄 UPDATE LATEST
-        latest_data = {
+        # 💾 SAVE TO MONGODB
+        collection.insert_one({
             "temperature": temp,
             "humidity": hum,
             "air": air,
             "time": current_time_str
-        }
+        })
 
         # 🚨 ALERT
         current_time = time.time()
@@ -134,39 +102,37 @@ def receive_data():
         return jsonify({"error": str(e)}), 500
 
 
-# 📊 GET DATA (FROM DB LAST ENTRY)
+# 📊 GET DATA (LATEST ENTRY)
 @app.route('/get-data')
 def get_data():
     try:
-        conn = sqlite3.connect("data.db")
-        cursor = conn.cursor()
+        latest = collection.find_one(sort=[("_id", -1)])
 
-        cursor.execute("""
-            SELECT temperature, humidity, air, time
-            FROM readings
-            ORDER BY id DESC
-            LIMIT 1
-        """)
-
-        row = cursor.fetchone()
-        conn.close()
-
-        if row:
+        if latest:
             return jsonify({
-                "temperature": row[0],
-                "humidity": row[1],
-                "air": row[2],
-                "time": row[3]
+                "temperature": latest.get("temperature", 0),
+                "humidity": latest.get("humidity", 0),
+                "air": latest.get("air", 0),
+                "time": latest.get("time", "No data")
             })
         else:
-            return jsonify(latest_data)
+            return jsonify({
+                "temperature": 0,
+                "humidity": 0,
+                "air": 0,
+                "time": "No data yet"
+            })
 
     except Exception as e:
         print("❌ ERROR:", e)
-        return jsonify(latest_data)
+        return jsonify({
+            "temperature": 0,
+            "humidity": 0,
+            "air": 0,
+            "time": "Error"
+        })
 
 
 # 🚀 RUN
 if __name__ == '__main__':
-    import os
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
