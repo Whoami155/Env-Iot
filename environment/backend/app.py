@@ -8,9 +8,11 @@ from pymongo import MongoClient
 app = Flask(__name__)
 CORS(app)
 
-# 🌐 MONGODB CONNECTION
-MONGO_URI = "mongodb+srv://Dhruv155_db_user:7h5E9fFzffF9V8Yf@iot-env.0ofnd6w.mongodb.net/iot_db?retryWrites=true&w=majority"
+# 🔐 ENV VARIABLES
+MONGO_URI = os.environ.get("MONGO_URI")
+MAILERSEND_API_KEY = os.environ.get("MAILERSEND_API_KEY")
 
+# 🌐 MONGODB CONNECTION
 try:
     client = MongoClient(
         MONGO_URI,
@@ -19,7 +21,7 @@ try:
         serverSelectionTimeoutMS=5000
     )
 
-    client.server_info()  # test connection
+    client.server_info()
 
     db = client["iot_db"]
     collection = db["readings"]
@@ -39,7 +41,7 @@ EMAIL_COOLDOWN = 60
 # 📩 EMAIL ALERT
 def send_email_alert(value):
     try:
-        api_key = "mlsn.623eaa2a9f35028ab9fb4f3b8df1a8910a86f1ae89024941019121b8735acb24"
+        api_key = MAILERSEND_API_KEY
 
         url = "https://api.mailersend.com/v1/email"
 
@@ -87,7 +89,6 @@ def receive_data():
 
         current_time_str = time.strftime("%H:%M:%S")
 
-        # ✅ FIXED LINE
         if collection is not None:
             collection.insert_one({
                 "temperature": temp,
@@ -96,7 +97,6 @@ def receive_data():
                 "time": current_time_str
             })
 
-        # 🚨 ALERT
         current_time = time.time()
 
         if air is not None and air > 200:
@@ -116,7 +116,6 @@ def receive_data():
 @app.route('/get-data')
 def get_data():
     try:
-        # ✅ FIXED LINE
         if collection is not None:
             latest = collection.find_one(sort=[("_id", -1)])
 
