@@ -20,7 +20,7 @@ Sensors → Arduino UNO → Serial Communication → NodeMCU → WiFi → Cloud 
 2. Arduino processes readings
 3. Data sent via Serial to NodeMCU
 4. NodeMCU sends data to cloud backend (Render)
-5. Backend stores data (SQLite)
+5. Backend stores data (Mongo-DB)
 6. Frontend fetches and displays live data
 
 ---
@@ -45,7 +45,7 @@ Sensors → Arduino UNO → Serial Communication → NodeMCU → WiFi → Cloud 
 * Arduino IDE
 * Embedded C / Arduino Programming
 * Flask (Python Backend)
-* SQLite Database
+* MongoDB Database
 * HTML, CSS, JavaScript (Frontend)
 * Chart.js (Data Visualization)
 * MailerSend API (Email Alerts)
