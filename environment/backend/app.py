@@ -12,6 +12,9 @@ CORS(app)
 MONGO_URI = os.environ.get("MONGO_URI")
 MAILERSEND_API_KEY = os.environ.get("MAILERSEND_API_KEY")
 
+# 🔥 THRESHOLD (SYNC WITH FRONTEND)
+AQI_THRESHOLD = 300
+
 # 🌐 MONGODB CONNECTION
 try:
     client = MongoClient(
@@ -41,12 +44,10 @@ EMAIL_COOLDOWN = 60
 # 📩 EMAIL ALERT
 def send_email_alert(value):
     try:
-        api_key = MAILERSEND_API_KEY
-
         url = "https://api.mailersend.com/v1/email"
 
         headers = {
-            "Authorization": f"Bearer {api_key}",
+            "Authorization": f"Bearer {MAILERSEND_API_KEY}",
             "Content-Type": "application/json"
         }
 
@@ -56,7 +57,7 @@ def send_email_alert(value):
             },
             "to": [{"email": "vergilwiz155@gmail.com"}],
             "subject": "🚨 Smart Classroom Alert",
-            "text": f"BAD AIR QUALITY!!!!!\nAQI Value: {value}\nFan and buzzer activated."
+            "text": f"BAD AIR QUALITY!\nAQI Value: {value}\nImmediate ventilation required."
         }
 
         response = requests.post(url, headers=headers, json=data)
@@ -89,6 +90,7 @@ def receive_data():
 
         current_time_str = time.strftime("%H:%M:%S")
 
+        # 💾 STORE DATA
         if collection is not None:
             collection.insert_one({
                 "temperature": temp,
@@ -97,9 +99,12 @@ def receive_data():
                 "time": current_time_str
             })
 
+        # 🚨 ALERT LOGIC (SYNCED)
         current_time = time.time()
 
-        if air is not None and air > 200:
+        if air is not None and air > AQI_THRESHOLD:
+            print("🚨 ALERT CONDITION TRUE")
+
             if current_time - last_email_time > EMAIL_COOLDOWN:
                 send_email_alert(air)
                 last_email_time = current_time
