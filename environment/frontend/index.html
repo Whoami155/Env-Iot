@@ -376,7 +376,7 @@
 
   function getTempStatus(t) { return t<18?['Too Cold','chip-warn']:t>28?['Too Hot','chip-danger']:['Normal','chip-good']; }
   function getHumStatus(h) { return h<30?['Dry','chip-warn']:h>70?['High Humidity','chip-warn']:['Comfortable','chip-good']; }
-  function getAirStatus(a) { return a<=50?['Good','chip-good']:a<=100?['Moderate','chip-good']:a<=150?['Sensitive Groups','chip-warn']:a<=200?['Unhealthy','chip-warn']:['Hazardous','chip-danger']; }
+  function getAirStatus(a) { return a<=150?['Good','chip-good']:a<=250?['Moderate','chip-warn']:a<=300?['Poor','chip-warn']:['Hazardous','chip-danger']; }
 
   function setChip(id, label, cls) {
     const el = document.getElementById(id);
@@ -413,7 +413,7 @@
       const [al,ac]=getAirStatus(a); setChip('air-chip',al,ac);
 
       const alertBox = document.getElementById('alert-box');
-      if (a > 200) {
+      if (a > 300) {
         alertBox.classList.add('visible');
         alertCount++;
         document.getElementById('alert-status').textContent = 'Alert Sent';
