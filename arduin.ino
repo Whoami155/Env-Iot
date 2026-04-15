@@ -7,7 +7,7 @@
 #define RELAY 7
 #define MQ_PIN A0
 
-int AIR_THRESHOLD = 200;   // adjust if needed
+int AIR_THRESHOLD = 300;   // adjust if needed
 
 DHT dht(DHTPIN, DHTTYPE);
 
